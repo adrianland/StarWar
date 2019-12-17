@@ -1,0 +1,145 @@
+<html>
+	<head>
+		<title>Start War</title>
+		<link rel="stylesheet" href="http://cdn.dhtmlx.com/edge/dhtmlx.css" type="text/css"> 
+		<script src="http://cdn.dhtmlx.com/edge/dhtmlx.js" type="text/javascript"></script>
+	</head>
+	<script>
+		dhtmlxEvent(window,"load",function(){ 
+			// Content Layout
+			var layout = new dhtmlXLayoutObject(document.body,"3T"); 
+
+			// Layout A
+			layout.cells("a").setText("Select");   
+			layout.cells("a").setHeight(250);
+				
+			var form = layout.cells("a").attachForm();
+			form.load('data/structs/formData.json');
+
+			form.attachEvent("onchange", function(id, val){ getPersonajeStarWar(val); });
+			
+			function getPersonajeStarWar(val) { // Create list the quotes
+				dhx.ajax.get("https://swapi.co/api/people/"+val+"/?format=json", function(r){
+				data = window.dhx.s2j(r.xmlDoc.responseText); // convert response to json object
+					if (data != null) {
+						llenarC(data);
+					}
+				});
+			}
+
+			// Layout B
+			layout.cells("b").setText("Lista");
+			layout.cells("b").setWidth(500);
+
+			// Layout C
+			layout.cells("c").setText("Personaje");
+
+			function llenarC(data) {
+				var nombre			= data.name;
+				var estatura  		= data.height;
+				var peso  			= data.mass;
+				var colorcabello  	= data.hair_color;
+				var colorpiel  		= data.skin_color;
+				var colorojos  		= data.eye_color;
+				var anionacimiento  = data.birth_year;
+				var genero  		= data.gender;
+				var planeta  		= data.homeworld;
+
+				var newForm = [
+					{
+						type : "fieldset",
+						label: "Personaje",
+						list:[
+							{ 
+								type		: "input",
+								value		: nombre,
+								name		: "nombre",
+								rows		: 1,
+								readonly	: true, 
+								inputWidth	: "300" 
+							},{ 
+								type		: "input",
+								value		: estatura,
+								name		: "estatura",
+								rows		: 1,
+								readonly	: true, 
+								inputWidth	: "300" 
+							},{ 
+								type		: "input",
+								value		: peso,
+								name		: "peso",
+								rows		: 1,
+								readonly	: true, 
+								inputWidth	: "300" 
+							},{ 
+								type		: "input",
+								value		: colorcabello,
+								name		: "colorcabello",
+								rows		: 1,
+								readonly	: true, 
+								inputWidth	: "300" 
+							},{ 
+								type		: "input",
+								value		: colorpiel,
+								name		: "colorpiel",
+								rows		: 1,
+								readonly	: true, 
+								inputWidth	: "300" 
+							},{ 
+								type		: "input",
+								value		: colorojos,
+								name		: "colorojos",
+								rows		: 1,
+								readonly	: true, 
+								inputWidth	: "300" 
+							},{ 
+								type		: "input",
+								value		: anionacimiento,
+								name		: "anionacimiento",
+								rows		: 1,
+								readonly	: true, 
+								inputWidth	: "300" 
+							},{ 
+								type		: "input",
+								value		: genero,
+								name		: "genero",
+								rows		: 1,
+								readonly	: true, 
+								inputWidth	: "300" 
+							},{ 
+								type		: "input",
+								value		: planeta,
+								name		: "planeta",
+								rows		: 1,
+								readonly	: true, 
+								inputWidth	: "300" 
+							}
+							
+						]
+					}
+				];
+				
+				var getDatos = layout.cells("c").attachForm(newForm);
+	
+				var infoForm = getDatos.getFormData();
+				setData(infoForm);
+			}
+		});
+
+		//Verifica que se envien los datos al model
+		function setData(infoForm) {
+			var ModelPath = 'data/models/insert.cfm';
+			window.dhx.ajax.post( ModelPath, infoForm);
+		}
+	</script>
+
+	<style>
+		html, body {
+			width	: 100%;     /*provides the correct work of a full-screen layout*/ 
+			height	: 100%;     /*provides the correct work of a full-screen layout*/
+			overflow: hidden;	/*hides the default body's space*/
+			margin	: 0px;      /*hides the body's scrolls*/
+		}
+	</style>
+	<body></body>
+</html>
