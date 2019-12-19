@@ -1,0 +1,1 @@
+ <cfdump var = "Comprobando la redireccion">
